@@ -1,9 +1,8 @@
 import ListGroup from "react-bootstrap/ListGroup";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
-function RoutineList() {
-  const routines = useLoaderData();
-  const navigate = useNavigate();
+function RoutineList({ routines }) {
+  const history = useHistory();
 
   return (
     <ListGroup>
@@ -12,7 +11,7 @@ function RoutineList() {
           key={routine.id}
           action
           onClick={() => {
-            navigate(`/routines/${routine.id}`);
+            history.push(`/routines/${routine.id}`);
           }}
         >
           {routine.name}
