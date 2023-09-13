@@ -28,6 +28,13 @@ const App = () => {
                     routine={dailyRoutines.find(
                       (routine) => routine.id === parseInt(match.params.id, 10),
                     )}
+                    onChange={(routine) => {
+                      const newRoutines = dailyRoutines.map((r) =>
+                        r.id === routine.id ? routine : r,
+                      );
+
+                      setDailyRoutines(newRoutines);
+                    }}
                   />
                 )}
               />

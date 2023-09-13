@@ -5,36 +5,56 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import ListGroup from "react-bootstrap/ListGroup";
 
-const Routine = ({ routine }) => (
-  <>
-    <Row>
-      <Col>
-        <Breadcrumb>
-          <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/" }}>
-            Home
-          </Breadcrumb.Item>
-          <Breadcrumb.Item active>{routine.name}</Breadcrumb.Item>
-        </Breadcrumb>
-      </Col>
-    </Row>
-    <Row>
-      <Col>
-        <ListGroup>
-          {routine.tasks.map((task, idx) => (
-            <ListGroup.Item key={idx}>
-              <Form.Check
-                type="checkbox"
-                label={task.name}
-                // checked={task.complete}
-                // onChange={() => {
-                // }}
-              />
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
-      </Col>
-    </Row>
-  </>
-);
+const Routine = ({ routine, onChange }) => {
+  const taskChecked = (idx) => {
+    const newRoutine = {
+      ...routine,
+      tasks: routine.tasks.map((t, i) =>
+        i === idx ? { ...t, complete: !t.complete } : t,
+      ),
+    };
+
+    onChange(newRoutine);
+  };
+
+  return (
+    <>
+      <Row>
+        <Col>
+          <Breadcrumb>
+            <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/" }}>
+              Home
+            </Breadcrumb.Item>
+            <Breadcrumb.Item active>{routine.name}</Breadcrumb.Item>
+          </Breadcrumb>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <ListGroup>
+            {routine.tasks.map((task, idx) => (
+              <ListGroup.Item
+                key={idx}
+                action
+                onClick={() => {
+                  taskChecked(idx);
+                }}
+              >
+                <Form.Check
+                  type="checkbox"
+                  label={task.name}
+                  checked={task.complete}
+                  onChange={() => {
+                    taskChecked(idx);
+                  }}
+                />
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Col>
+      </Row>
+    </>
+  );
+};
 
 export default Routine;
