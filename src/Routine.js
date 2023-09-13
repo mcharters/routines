@@ -51,6 +51,9 @@ const Routine = ({ routine, onChange }) => {
               </ListGroup.Item>
             ))}
           </ListGroup>
+          <h4 className="status">
+            Tasks Completed: {routine.tasks.filter((t) => t.complete).length}
+          </h4>
         </Col>
       </Row>
     </>
