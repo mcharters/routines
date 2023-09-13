@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -6,9 +6,29 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Routine from "./Routine";
 import RoutineList from "./RoutineList";
 import routines from "./routines";
+import { Button } from "react-bootstrap";
 
 const App = () => {
-  const [dailyRoutines, setDailyRoutines] = useState(routines);
+  const [dailyRoutines, setDailyRoutines] = useState(null);
+
+  useEffect(() => {
+    if (!dailyRoutines) {
+      // check to see if we have daily routines in local storage
+      const storedRoutines = localStorage.getItem("dailyRoutines");
+      if (storedRoutines) {
+        setDailyRoutines(JSON.parse(storedRoutines));
+      } else {
+        setDailyRoutines(routines);
+      }
+    } else {
+      // save daily routines to local storage
+      localStorage.setItem("dailyRoutines", JSON.stringify(dailyRoutines));
+    }
+  }, [dailyRoutines]);
+
+  if (!dailyRoutines) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Container>
@@ -40,6 +60,9 @@ const App = () => {
               />
               <Route path="/">
                 <RoutineList routines={dailyRoutines} />
+                <Button onClick={() => setDailyRoutines(routines)}>
+                  New Day
+                </Button>
               </Route>
             </Switch>
           </Col>
