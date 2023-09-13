@@ -22,7 +22,7 @@ const Routine = ({ routine, onChange }) => {
       <Row>
         <Col>
           <Breadcrumb>
-            <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/" }}>
+            <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/routines" }}>
               Home
             </Breadcrumb.Item>
             <Breadcrumb.Item active>{routine.name}</Breadcrumb.Item>
