@@ -4,29 +4,28 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Routine from "./Routine";
-import RoutineList from "./RoutineList";
 import routines from "./routines";
-import { Button } from "react-bootstrap";
+import RoutinePeriod from "./RoutinePeriod";
 
 const App = () => {
-  const [dailyRoutines, setDailyRoutines] = useState(null);
+  const [localRoutines, setLocalRoutines] = useState(null);
 
   useEffect(() => {
-    if (!dailyRoutines) {
+    if (!localRoutines) {
       // check to see if we have daily routines in local storage
-      const storedRoutines = localStorage.getItem("dailyRoutines");
+      const storedRoutines = localStorage.getItem("routines");
       if (storedRoutines) {
-        setDailyRoutines(JSON.parse(storedRoutines));
+        setLocalRoutines(JSON.parse(storedRoutines));
       } else {
-        setDailyRoutines(routines);
+        setLocalRoutines(routines);
       }
     } else {
       // save daily routines to local storage
-      localStorage.setItem("dailyRoutines", JSON.stringify(dailyRoutines));
+      localStorage.setItem("routines", JSON.stringify(localRoutines));
     }
-  }, [dailyRoutines]);
+  }, [localRoutines]);
 
-  if (!dailyRoutines) {
+  if (!localRoutines) {
     return <div>Loading...</div>;
   }
 
@@ -42,27 +41,34 @@ const App = () => {
           <Col>
             <Switch>
               <Route
-                path="/routines/:id"
+                path="/routines/:period/:id"
                 render={({ match }) => (
                   <Routine
-                    routine={dailyRoutines.find(
+                    routine={localRoutines[match.params.period].find(
                       (routine) => routine.id === parseInt(match.params.id, 10),
                     )}
                     onChange={(routine) => {
-                      const newRoutines = dailyRoutines.map((r) =>
-                        r.id === routine.id ? routine : r,
-                      );
+                      const newRoutines = localRoutines[
+                        match.params.period
+                      ].map((r) => (r.id === routine.id ? routine : r));
 
-                      setDailyRoutines(newRoutines);
+                      setLocalRoutines({
+                        ...localRoutines,
+                        [match.params.period]: newRoutines,
+                      });
                     }}
                   />
                 )}
               />
               <Route path="/">
-                <RoutineList routines={dailyRoutines} />
-                <Button onClick={() => setDailyRoutines(routines)}>
-                  New Day
-                </Button>
+                {Object.keys(localRoutines).map((period) => (
+                  <RoutinePeriod
+                    key={period}
+                    period={period}
+                    localRoutines={localRoutines}
+                    setLocalRoutines={setLocalRoutines}
+                  />
+                ))}
               </Route>
             </Switch>
           </Col>

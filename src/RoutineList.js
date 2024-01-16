@@ -1,12 +1,14 @@
 import ListGroup from "react-bootstrap/ListGroup";
 import Badge from "react-bootstrap/Badge";
 import { useHistory } from "react-router-dom";
+import { names } from "./routines";
 
-function RoutineList({ routines }) {
+function RoutineList({ period, routines }) {
   const history = useHistory();
 
   return (
     <>
+      <h3>{names[period].name}</h3>
       <ListGroup>
         {routines.map((routine) => (
           <ListGroup.Item
@@ -14,7 +16,7 @@ function RoutineList({ routines }) {
             action
             className="d-flex justify-content-between align-items-start"
             onClick={() => {
-              history.push(`/routines/${routine.id}`);
+              history.push(`/routines/${period}/${routine.id}`);
             }}
           >
             <div>{routine.name}</div>
